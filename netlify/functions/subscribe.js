@@ -4,25 +4,40 @@ let subscriptions = [];
 
 // Fonction handler pour gérer les abonnements
 exports.handler = async (event, context) => {
-    const body = JSON.parse(event.body);
-    const subscription = body;
-    
-    // Vérification de l'existence de l'abonnement
-    const exists = subscriptions.some(
-        (sub) => sub.endpoint === subscription.endpoint && sub.keys.p256dh === subscription.keys.p256dh && sub.keys.auth === subscription.keys.auth
-    );
-
-    if (!exists) {
-        subscriptions.push(subscription);
+    if (!event.body) {
         return {
-            statusCode: 201,
-            body: JSON.stringify({ message: 'Abonnement enregistré avec succès !' }),
+            statusCode: 400,
+            body: JSON.stringify({ message: 'Le corps de la requête est vide.' }),
         };
+    }
+
+     try {
+        const body = JSON.parse(event.body);
+        const subscription = body;
+
+        // Vérification de l'existence de l'abonnement
+        const exists = subscriptions.some(
+            (sub) => sub.endpoint === subscription.endpoint && sub.keys.p256dh === subscription.keys.p256dh && sub.keys.auth === subscription.keys.auth
+        );
+
+        if (!exists) {
+            subscriptions.push(subscription);
+            return {
+                statusCode: 201,
+                body: JSON.stringify({ message: 'Abonnement enregistré avec succès !' }),
+            };
+        } 
+        else {
+            return {
+                statusCode: 200,
+                body: JSON.stringify({ message: 'Abonnement déjà existant.' }),
+            };
+        }
     } 
-    else {
+    catch (error) {
         return {
-            statusCode: 200,
-            body: JSON.stringify({ message: 'Abonnement déjà existant.' }),
+            statusCode: 400,
+            body: JSON.stringify({ message: 'Erreur lors du parsing du JSON.', error: error.message }),
         };
     }
 };
