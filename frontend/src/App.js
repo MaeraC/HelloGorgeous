@@ -52,7 +52,7 @@ function App() {
     };
 
     return (
-        <div>
+        <div style={{background: "pink"}}>
             <h1>Hello Gorgeous!</h1>
             <p>Active les notifications pour recevoir ton rappel quotidien.</p>
             <button onClick={subscribeToPush}>Activer les notifications</button>
