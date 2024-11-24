@@ -1,8 +1,10 @@
 [build]
-  functions = "netlify/functions"
+  command = "npm install --prefix frontend && npm run build --prefix frontend"
+  publish = "/opt/build/repo/frontend/build"
 
-[[plugins]]
-  package = "@netlify/plugin-functions-core"
+[functions]
+  functionsDirectory = "netlify/functions"
 
-[dev]
-  functions = "netlify/functions"
+[env]
+  VAPID_PUBLIC_KEY = "your_vapid_public_key"
+  VAPID_PRIVATE_KEY = "your_vapid_private_key"
