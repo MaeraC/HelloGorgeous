@@ -8,8 +8,8 @@ function App() {
 
     const serverUrl = 
     window.location.origin.includes('localhost') 
-        ? 'http://localhost:5000'  // Serveur local
-        : 'https://votre-serveur-deploye.com';  // URL de production
+        ? 'http://localhost:5000'  
+        : 'https://hello-gorgeous-y.netlify.app';  
 
     const subscribeToPush = async () => {
         if ('serviceWorker' in navigator && 'PushManager' in window) {
