@@ -45,7 +45,7 @@ function App() {
             const subscriptionResponse = await fetch(`${serverUrl}/subscribe`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(subscription),
+               // body: JSON.stringify(subscription),
                 ///////////:
                 body: JSON.stringify({
                     subscription,   // Objet d'abonnement
