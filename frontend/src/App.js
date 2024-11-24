@@ -9,42 +9,40 @@ function App() {
     const serverUrl = 
     window.location.origin.includes('localhost') 
         ? 'http://localhost:5000'  
-        : 'https://hello-gorgeous-y.netlify.app';  
+        : '/.netlify/functions';  
 
     const subscribeToPush = async () => {
         if ('serviceWorker' in navigator && 'PushManager' in window) {
-             // Vérifier si un abonnement existe déjà
-             const registration = await navigator.serviceWorker.ready;
-        const existingSubscription = await registration.pushManager.getSubscription();
-        
-        if (existingSubscription) {
-            // Se désabonner de l'ancien abonnement
-            await existingSubscription.unsubscribe();
-        }
+            // Vérifier si un abonnement existe déjà
+            const registration = await navigator.serviceWorker.ready;
+            const existingSubscription = await registration.pushManager.getSubscription();
+            
+            if (existingSubscription) {
+                // Se désabonner de l'ancien abonnement
+                await existingSubscription.unsubscribe();
+            }
 
-        // Obtenir la clé publique du serveur
-        const response = await fetch(`${serverUrl}/vapidPublicKey`);
-        if (!response.ok) {
-            throw new Error('Impossible d\'obtenir la clé publique');
-        }
-        const { publicKey } = await response.json();
+            // Obtenir la clé publique du serveur
+            const response = await fetch(`${serverUrl}/vapidPublicKey`);
+            const { publicKey } = await response.json();
+            console.log(publicKey)
         
-        // S'abonner à la nouvelle clé publique
-        const subscription = await registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: publicKey,
-        });
-        
-        // Enregistrer le nouvel abonnement
-        const subscriptionResponse = await fetch(`${serverUrl}/subscribe`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(subscription),
-        });
+            // S'abonner à la nouvelle clé publique
+            const subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: publicKey,
+            });
+            
+            // Enregistrer le nouvel abonnement
+            const subscriptionResponse = await fetch(`${serverUrl}/subscribe`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(subscription),
+            });
 
-        if (!subscriptionResponse.ok) {
-            throw new Error('Impossible d\'enregistrer l\'abonnement');
-        }
+            if (!subscriptionResponse.ok) {
+                throw new Error('Impossible d\'enregistrer l\'abonnement');
+            }
         
             setSuccess('Notifications activées avec succès !');
         } 

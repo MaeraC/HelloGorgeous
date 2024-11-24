@@ -1,0 +1,38 @@
+# .github/workflows/send-notifications.yml
+name: Deploy to Netlify
+
+on:
+  push:
+    branches:
+      - main  # Déclenchement lors d'un push sur la branche principale
+  schedule:
+    - cron: "0 11 * * *"  # Déclenchement à 11h UTC tous les jours (ajuste si nécessaire)
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Build the frontend
+        run: |
+          cd frontend
+          npm run build
+
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v3
+        with:
+          publish-dir: ./frontend/build  # Dossier à publier
+          deploy-key: ${{ secrets.NETLIFY_AUTH_TOKEN }}  # Clé d'authentification Netlify à ajouter dans les secrets de GitHub
