@@ -35,16 +35,27 @@ function App() {
 
             console.log('Nouvel abonnement:', subscription);
             
-            // Enregistrer le nouvel abonnement
-            const subscriptionResponse = await fetch(`${serverUrl}/subscribe`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(subscription)
-            });
+            // Sérialiser l'abonnement en envoyant uniquement les propriétés nécessaires
+        const subscriptionData = {
+            endpoint: subscription.endpoint,
+            keys: {
+                p256dh: subscription.getKey('p256dh'),
+                auth: subscription.getKey('auth'),
+            },
+        };
 
-            if (!subscriptionResponse.ok) {
-                throw new Error('Impossible d\'enregistrer l\'abonnement');
-            }
+        console.log('Abonnement sérialisé:', subscriptionData);  // Vérifier ce qui est envoyé
+
+        // Enregistrer le nouvel abonnement
+        const subscriptionResponse = await fetch(`${serverUrl}/subscribe`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(subscriptionData),  // Envoi des données sérialisées
+        });
+
+        if (!subscriptionResponse.ok) {
+            throw new Error('Impossible d\'enregistrer l\'abonnement');
+        }
         
             setSuccess('Notifications activées avec succès !');
         } 
