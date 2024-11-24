@@ -11,6 +11,18 @@ function App() {
         ? 'http://localhost:5000'  
         : '/.netlify/functions';  
 
+        const serializeSubscription = (subscription) => {
+            const subscriptionObj = {
+                endpoint: subscription.endpoint,
+                keys: {
+                    p256dh: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.keys.p256dh))),
+                    auth: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.keys.auth))),
+                },
+            };
+            console.log("Abonnement sérialisé:", subscriptionObj);
+            return subscriptionObj;
+        };
+
     const subscribeToPush = async () => {
         if ('serviceWorker' in navigator && 'PushManager' in window) {
             // Vérifier si un abonnement existe déjà
@@ -33,33 +45,17 @@ function App() {
                 applicationServerKey: publicKey,
             });
 
-            console.log('Nouvel abonnement:', subscription);
-            
-             // Convertir l'ArrayBuffer de applicationServerKey en une chaîne base64
-        const applicationServerKey = btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.options.applicationServerKey)));
+            const serializedSubscription = serializeSubscription(subscription);
 
-        // Sérialiser l'abonnement en envoyant uniquement les propriétés nécessaires
-        const subscriptionData = {
-            endpoint: subscription.endpoint,
-            keys: {
-                p256dh: subscription.getKey('p256dh'),
-                auth: subscription.getKey('auth'),
-                applicationServerKey: applicationServerKey, // Inclure la clé convertie
-            },
-        };
-
-        console.log('Abonnement sérialisé:', subscriptionData);  // Vérifier ce qui est envoyé
-
-        // Enregistrer le nouvel abonnement
-        const subscriptionResponse = await fetch(`${serverUrl}/subscribe`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(subscriptionData),  // Envoi des données sérialisées
-        });
-
-        if (!subscriptionResponse.ok) {
-            throw new Error('Impossible d\'enregistrer l\'abonnement');
-        }
+            const subscriptionResponse = await fetch(`${serverUrl}/subscribe`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(serializedSubscription), // Envoi l'abonnement sérialisé
+            });
+    
+            if (!subscriptionResponse.ok) {
+                throw new Error('Impossible d\'enregistrer l\'abonnement');
+            }
         
             setSuccess('Notifications activées avec succès !');
         } 
