@@ -7,42 +7,44 @@ const fs = require('fs');
 
 let vapidKeys;
 
-// Si on est en local, on utilise le fichier JSON
-if (process.env.NODE_ENV !== 'production') {
-    console.log('Mode local détecté. Utilisation des clés VAPID du fichier JSON.')
-    console.log('Clés VAPID (production) :', process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY);
+// Détection de l'environnement
+const isProduction = process.env.NODE_ENV === 'production';
 
-    const VAPID_KEYS_FILE = './vapid-keys.json';
-    
+if (!isProduction) {
+    // En local, utiliser ou générer les clés VAPID
+    console.log('Mode local détecté. Utilisation des clés VAPID du fichier JSON.')
+    const VAPID_KEYS_FILE = './vapid-keys.json'
+
     if (fs.existsSync(VAPID_KEYS_FILE)) {
-        vapidKeys = JSON.parse(fs.readFileSync(VAPID_KEYS_FILE, 'utf8'));
+        // Lire les clés depuis le fichier JSON
+        vapidKeys = JSON.parse(fs.readFileSync(VAPID_KEYS_FILE, 'utf8'))
     } 
     else {
-        vapidKeys = webpush.generateVAPIDKeys();
-        // Sauvegarde les clés dans un fichier JSON pour les réutiliser en local
-        fs.writeFileSync(VAPID_KEYS_FILE, JSON.stringify(vapidKeys), 'utf8');
-        console.log('Clés VAPID générées et sauvegardées !');
+        // Générer de nouvelles clés et les sauvegarder
+        vapidKeys = webpush.generateVAPIDKeys()
+        fs.writeFileSync(VAPID_KEYS_FILE, JSON.stringify(vapidKeys), 'utf8')
+        console.log('Clés VAPID générées et sauvegardées en local.')
     }
-} 
-else {
-    // En production (Netlify), on utilise les variables d'environnement
-    console.log('Mode production détecté. Utilisation des clés VAPID des variables d\'environnement.');
+} else {
+    // En production, utiliser les variables d'environnement
+    console.log('Mode production détecté. Utilisation des clés VAPID des variables d\'environnement.')
 
+    // Vérifier que les variables d'environnement sont définies
     if (!process.env.VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) {
-        throw new Error('Les clés VAPID ne sont pas définies dans les variables d\'environnement.');
+        throw new Error('Les clés VAPID ne sont pas définies dans les variables d\'environnement.')
     }
 
     vapidKeys = {
         publicKey: process.env.VAPID_PUBLIC_KEY,
-        privateKey: process.env.VAPID_PRIVATE_KEY
-    };
+        privateKey: process.env.VAPID_PRIVATE_KEY,
+    }
 }
 
-// Configure web-push avec les clés VAPID
+// Configurer web-push avec les clés VAPID
 webpush.setVapidDetails(
-    'mailto:dev.mc.studio@gmail.com', // Ton email
+    'mailto:dev.mc.studio@gmail.com', // Remplace par ton email
     vapidKeys.publicKey,
     vapidKeys.privateKey
-);
+)
 
-module.exports = { webpush, vapidKeys };
+module.exports = { webpush, vapidKeys }
