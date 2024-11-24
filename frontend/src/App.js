@@ -32,13 +32,28 @@ function App() {
                 userVisibleOnly: true,
                 applicationServerKey: publicKey,
             });
+
+            ///////////
+            // Créer un contenu de notification
+        const notificationContent = {
+            title: 'Hello Gorgeous!',
+            body: 'Active les notifications pour recevoir ton rappel quotidien.',
+            icon: '/logo.png',
+        };
             
             // Enregistrer le nouvel abonnement
             const subscriptionResponse = await fetch(`${serverUrl}/subscribe`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(subscription),
+                ///////////:
+                body: JSON.stringify({
+                    subscription,   // Objet d'abonnement
+                    notification: notificationContent  // Contenu de la notification
+                }),
             });
+
+            
 
             if (!subscriptionResponse.ok) {
                 throw new Error('Impossible d\'enregistrer l\'abonnement');

@@ -9,6 +9,7 @@ let subscriptions = [];
 
 exports.handler = async (event, context) => {
     const todayIndex = new Date().getDate() % texts.length;
+
     const notificationPayload = {
         title: 'Hello Gorgeous!',
         body: texts[todayIndex], 
@@ -16,13 +17,16 @@ exports.handler = async (event, context) => {
     };
 
     // Envoi de la notification à chaque abonné
-    subscriptions.forEach((subscription, index) => {
+    subscriptions.forEach((subData, index) => {
+        const { subscription } = subData;
+
+        // Envoi de la notification
         webpush
             .sendNotification(subscription, JSON.stringify(notificationPayload))
             .then(() => console.log(`Notification envoyée à l'abonnement ${index}`))
             .catch((err) => {
                 console.error(`Erreur pour l'abonnement ${index}:`, err);
-                subscriptions.splice(index, 1);
+                subscriptions.splice(index, 1);  // Supprimer l'abonnement en cas d'erreur
             });
     });
 
