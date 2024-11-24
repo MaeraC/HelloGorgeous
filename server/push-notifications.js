@@ -9,6 +9,7 @@ let vapidKeys;
 
 // Vérification de l'environnement
 const isProduction = process.env.NODE_ENV === 'production';
+console.log('NODE_ENV:', process.env.NODE_ENV)
 
 if (!isProduction) {
     // En local, utiliser ou générer les clés VAPID
