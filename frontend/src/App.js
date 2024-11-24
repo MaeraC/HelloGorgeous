@@ -11,20 +11,22 @@ function App() {
         ? 'http://localhost:5000'  
         : '/.netlify/functions';  
 
-        const serializeSubscription = (subscription) => {
-            // Vérification que les clés existent
-            if (!subscription.keys || !subscription.keys.p256dh || !subscription.keys.auth) {
-                throw new Error("Les clés de l'abonnement sont manquantes.");
-            }
-    
-            return {
-                endpoint: subscription.endpoint,
-                keys: {
-                    p256dh: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.keys.p256dh))),
-                    auth: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.keys.auth))),
-                },
-            };
+        // Fonction de sérialisation de l'abonnement
+    const serializeSubscription = (subscription) => {
+        // Vérification que les clés existent
+        if (!subscription.keys || !subscription.keys.p256dh || !subscription.keys.auth) {
+            console.error("Clés manquantes dans l'abonnement:", subscription);
+            throw new Error("Les clés de l'abonnement sont manquantes.");
+        }
+
+        return {
+            endpoint: subscription.endpoint,
+            keys: {
+                p256dh: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.keys.p256dh))),
+                auth: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.keys.auth))),
+            },
         };
+    };
 
     const subscribeToPush = async () => {
         if ('serviceWorker' in navigator && 'PushManager' in window) {
@@ -48,17 +50,21 @@ function App() {
                 applicationServerKey: publicKey,
             });
 
-            const serializedSubscription = serializeSubscription(subscription);
+               console.log("Nouvel abonnement:", subscription);
 
-            const subscriptionResponse = await fetch(`${serverUrl}/subscribe`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(serializedSubscription), // Envoi l'abonnement sérialisé
-            });
-    
-            if (!subscriptionResponse.ok) {
-                throw new Error('Impossible d\'enregistrer l\'abonnement');
-            }
+                // Sérialiser l'abonnement
+                const serializedSubscription = serializeSubscription(subscription);
+
+                // Enregistrer l'abonnement sur le serveur
+                const subscriptionResponse = await fetch(`${serverUrl}/subscribe`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(serializedSubscription),
+                });
+
+                if (!subscriptionResponse.ok) {
+                    throw new Error("Impossible d'enregistrer l'abonnement");
+                }
         
             setSuccess('Notifications activées avec succès !');
         } 
