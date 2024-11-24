@@ -1,8 +1,15 @@
 import { useState } from "react";
 
+// fichier frontend/src/App.js
+
 function App() {
     const [error, setError] = useState("")
     const [success, setSuccess] = useState("")
+
+    const serverUrl = 
+    window.location.origin.includes('localhost') 
+        ? 'http://localhost:5000'  // Serveur local
+        : 'https://votre-serveur-deploye.com';  // URL de production
 
     const subscribeToPush = async () => {
         if ('serviceWorker' in navigator && 'PushManager' in window) {
@@ -16,7 +23,10 @@ function App() {
         }
 
         // Obtenir la clé publique du serveur
-        const response = await fetch('http://localhost:5000/vapidPublicKey');
+        const response = await fetch(`${serverUrl}/vapidPublicKey`);
+        if (!response.ok) {
+            throw new Error('Impossible d\'obtenir la clé publique');
+        }
         const { publicKey } = await response.json();
         
         // S'abonner à la nouvelle clé publique
@@ -26,11 +36,15 @@ function App() {
         });
         
         // Enregistrer le nouvel abonnement
-        await fetch('http://localhost:5000/subscribe', {
+        const subscriptionResponse = await fetch(`${serverUrl}/subscribe`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(subscription),
         });
+
+        if (!subscriptionResponse.ok) {
+            throw new Error('Impossible d\'enregistrer l\'abonnement');
+        }
         
             setSuccess('Notifications activées avec succès !');
         } 
