@@ -64,7 +64,7 @@ const sendNotification = () => {
 const scheduleDailyNotification = () => {
     const now = new Date()
     const targetTime = new Date()
-    targetTime.setHours(11, 12, 0, 0)
+    targetTime.setHours(17, 16, 0, 0)
 
     if (now > targetTime) targetTime.setDate(targetTime.getDate() + 1)
 
