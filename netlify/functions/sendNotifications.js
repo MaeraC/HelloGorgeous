@@ -1,7 +1,9 @@
-// netlify/functions/sendNotification.js
-const { webpush } = require('../../server/push-notifications');
-const texts = require('../../server/datas.json');  // Tes textes de notification
 
+// netlify/functions/sendNotification.js
+const path = require('path');
+const { webpush } = require(path.resolve(__dirname, '../../server/push-notifications'));
+
+const texts = require(path.resolve(__dirname, '../../server/datas.json'));
 
 let subscriptions = [];
 
@@ -9,7 +11,7 @@ exports.handler = async (event, context) => {
     const todayIndex = new Date().getDate() % texts.length;
     const notificationPayload = {
         title: 'Hello Gorgeous!',
-        body: texts[todayIndex],  // Texte de notification
+        body: texts[todayIndex], 
         icon: '/logo.png',
     };
 
@@ -20,7 +22,7 @@ exports.handler = async (event, context) => {
             .then(() => console.log(`Notification envoyée à l'abonnement ${index}`))
             .catch((err) => {
                 console.error(`Erreur pour l'abonnement ${index}:`, err);
-                subscriptions.splice(index, 1);  // Suppression de l'abonnement en cas d'erreur
+                subscriptions.splice(index, 1);
             });
     });
 

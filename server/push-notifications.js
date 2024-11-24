@@ -10,6 +10,7 @@ let vapidKeys;
 // Si on est en local, on utilise le fichier JSON
 if (process.env.NODE_ENV !== 'production') {
     console.log('Mode local détecté. Utilisation des clés VAPID du fichier JSON.')
+    console.log('Clés VAPID (production) :', process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY);
 
     const VAPID_KEYS_FILE = './vapid-keys.json';
     
@@ -26,7 +27,7 @@ if (process.env.NODE_ENV !== 'production') {
 else {
     // En production (Netlify), on utilise les variables d'environnement
     console.log('Mode production détecté. Utilisation des clés VAPID des variables d\'environnement.');
-    
+
     if (!process.env.VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) {
         throw new Error('Les clés VAPID ne sont pas définies dans les variables d\'environnement.');
     }

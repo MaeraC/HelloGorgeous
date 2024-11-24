@@ -1,6 +1,5 @@
-// netlify/functions/subscribe.js
-const { webpush } = require('../../server/push-notifications'); // On garde la logique de webpush
 
+// netlify/functions/subscribe.js
 let subscriptions = [];
 
 // Fonction handler pour gérer les abonnements
