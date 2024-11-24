@@ -35,12 +35,16 @@ function App() {
 
             console.log('Nouvel abonnement:', subscription);
             
-            // Sérialiser l'abonnement en envoyant uniquement les propriétés nécessaires
+             // Convertir l'ArrayBuffer de applicationServerKey en une chaîne base64
+        const applicationServerKey = btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.options.applicationServerKey)));
+
+        // Sérialiser l'abonnement en envoyant uniquement les propriétés nécessaires
         const subscriptionData = {
             endpoint: subscription.endpoint,
             keys: {
                 p256dh: subscription.getKey('p256dh'),
                 auth: subscription.getKey('auth'),
+                applicationServerKey: applicationServerKey, // Inclure la clé convertie
             },
         };
 
