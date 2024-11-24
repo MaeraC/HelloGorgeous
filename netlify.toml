@@ -3,7 +3,7 @@
   publish = "/opt/build/repo/frontend/build"
 
 [functions]
-  functions = "netlify/functions"
+  directory = "netlify/functions"
 
 [env]
   VAPID_PUBLIC_KEY = "your_vapid_public_key"
