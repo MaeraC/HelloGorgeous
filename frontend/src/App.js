@@ -9,7 +9,7 @@ function App() {
     const serverUrl = 
     window.location.origin.includes('localhost') 
         ? 'http://localhost:5000'  
-        : '/netlify/functions';  
+        : '/.netlify/functions';  
 
     const subscribeToPush = async () => {
         if ('serviceWorker' in navigator && 'PushManager' in window) {
