@@ -12,15 +12,18 @@ function App() {
         : '/.netlify/functions';  
 
         const serializeSubscription = (subscription) => {
-            const subscriptionObj = {
+            // Vérification que les clés existent
+            if (!subscription.keys || !subscription.keys.p256dh || !subscription.keys.auth) {
+                throw new Error("Les clés de l'abonnement sont manquantes.");
+            }
+    
+            return {
                 endpoint: subscription.endpoint,
                 keys: {
                     p256dh: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.keys.p256dh))),
                     auth: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.keys.auth))),
                 },
             };
-            console.log("Abonnement sérialisé:", subscriptionObj);
-            return subscriptionObj;
         };
 
     const subscribeToPush = async () => {
