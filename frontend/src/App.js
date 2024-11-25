@@ -52,6 +52,11 @@ function App() {
 
                console.log("Nouvel abonnement:", subscription);
 
+                // Vérification de la présence des clés
+                if (!subscription.keys || !subscription.keys.p256dh || !subscription.keys.auth) {
+                    throw new Error("Les clés de l'abonnement sont manquantes.");
+                }
+
                 // Sérialiser l'abonnement
                 const serializedSubscription = serializeSubscription(subscription);
 
