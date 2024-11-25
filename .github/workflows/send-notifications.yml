@@ -6,7 +6,7 @@ on:
     branches:
       - main  # Déclenchement lors d'un push sur la branche principale
   schedule:
-    - cron: "01 19 * * *"  # Déclenchement à 11h UTC tous les jours (ajuste si nécessaire) 
+    - cron: "32 16 * * *"  # Déclenchement à 11h UTC tous les jours (ajuste si nécessaire) 
 
 jobs:
   deploy:
