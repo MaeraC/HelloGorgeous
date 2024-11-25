@@ -10,8 +10,24 @@ exports.handler = async (event, context) => {
 
         const subscription = body; 
 
+       // const exists = subscriptions.some(
+        //    (sub) => sub.endpoint === subscription.endpoint && sub.keys.p256dh === subscription.keys.p256dh && sub.keys.auth === subscription.keys.auth
+        //);
+
+        if (!subscription.keys || !subscription.keys.p256dh || !subscription.keys.auth) {
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ error: "Subscribe.js : Les clés `p256dh` ou `auth` sont manquantes." }),
+            };
+        }
+        
+        console.log("Abonnement reçu :", subscription);
+
         const exists = subscriptions.some(
-            (sub) => sub.endpoint === subscription.endpoint && sub.keys.p256dh === subscription.keys.p256dh && sub.keys.auth === subscription.keys.auth
+            (sub) =>
+                sub.endpoint === subscription.endpoint &&
+                sub.keys.p256dh === subscription.keys.p256dh &&
+                sub.keys.auth === subscription.keys.auth
         );
 
         if (!exists) {
@@ -32,7 +48,7 @@ exports.handler = async (event, context) => {
     catch (error) {
         return {
             statusCode: 400,
-            body: JSON.stringify({ message: 'Erreur lors du parsing du JSON.', error: error.message }),
+            body: JSON.stringify({ error: "Erreur lors du traitement de l'abonnement.", details: error.message }),
         };
     }
 };

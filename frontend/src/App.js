@@ -49,7 +49,9 @@ function App() {
     
                 // Se désabonner de l'ancien abonnement (si nécessaire)
                 if (existingSubscription) {
+                    console.log("Ancien abonnement détecté :", existingSubscription);
                     await existingSubscription.unsubscribe();
+                    console.log("Ancien abonnement désabonné.");
                 }
     
                 // Obtenir la clé publique VAPID depuis le serveur
@@ -75,6 +77,7 @@ function App() {
 
                 // Sérialisation de l'abonnement
                 const serializedSubscription = serializeSubscription(subscription);
+                console.log("Données sérialisées envoyées au serveur :", serializedSubscription);
     
                 // Envoyer l'abonnement au serveur
                 const subscriptionResponse = await fetch(`${serverUrl}/subscribe`, {
@@ -82,6 +85,8 @@ function App() {
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(serializedSubscription),
                 });
+
+                
     
                 if (!subscriptionResponse.ok) {
                     throw new Error("Échec de l'enregistrement de l'abonnement sur le serveur.");
