@@ -43,7 +43,7 @@ if (!isProduction) {
 
 // Configurer web-push avec les clés VAPID
 webpush.setVapidDetails(
-    'mailto:dev.mc.studio@gmail.com', // Ton email
+    'mailto:dev.mc.studio@gmail.com', 
     vapidKeys.publicKey,
     vapidKeys.privateKey
 );

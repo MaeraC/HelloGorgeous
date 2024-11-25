@@ -4,23 +4,12 @@ let subscriptions = [];
 
 // Fonction handler pour gérer les abonnements
 exports.handler = async (event, context) => {
-    /*if (!event.body) {
-        return {
-            statusCode: 400,
-            body: JSON.stringify({ message: 'Le corps de la requête est vide.' }),
-        };
-    }*/
-
     try {
-        
-
         const body = JSON.parse(event.body);
-        // Log pour vérifier ce qui est reçu dans le corps de la requête
         console.log('Corps de la requête subscribe:', body);
-        
-        const subscription = body; // Le contenu de l'abonnement envoyé
 
-        // Vérification de l'existence de l'abonnement
+        const subscription = body; 
+
         const exists = subscriptions.some(
             (sub) => sub.endpoint === subscription.endpoint && sub.keys.p256dh === subscription.keys.p256dh && sub.keys.auth === subscription.keys.auth
         );

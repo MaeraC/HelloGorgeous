@@ -3,7 +3,6 @@
 const path = require('path');
 const { vapidKeys } = require(path.resolve(__dirname, '../../server/push-notifications'));
 
-
 exports.handler = async (event, context) => {
     if (!vapidKeys.publicKey) {
         return {
