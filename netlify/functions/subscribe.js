@@ -1,3 +1,4 @@
+app.use(express.json());
 
 // netlify/functions/subscribe.js
 let subscriptions = [];
@@ -52,3 +53,4 @@ exports.handler = async (event, context) => {
         };
     }
 };
+

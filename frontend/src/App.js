@@ -86,7 +86,6 @@ function App() {
                     body: JSON.stringify(serializedSubscription),
                 });
 
-                
     
                 if (!subscriptionResponse.ok) {
                     throw new Error("Échec de l'enregistrement de l'abonnement sur le serveur.");
