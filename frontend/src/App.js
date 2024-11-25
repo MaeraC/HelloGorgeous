@@ -12,21 +12,28 @@ function App() {
         : '/.netlify/functions';  
 
         // Fonction de sérialisation de l'abonnement
-    const serializeSubscription = (subscription) => {
-        // Vérification que les clés existent
-        if (!subscription.keys || !subscription.keys.p256dh || !subscription.keys.auth) {
-            console.error("Clés manquantes dans l'abonnement:", subscription);
-            throw new Error("Les clés de l'abonnement sont manquantes.");
-        }
-
-        return {
-            endpoint: subscription.endpoint,
-            keys: {
-                p256dh: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.keys.p256dh))),
-                auth: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.keys.auth))),
-            },
+        const serializeSubscription = (subscription) => {
+            try {
+                const p256dh = subscription.getKey("p256dh");
+                const auth = subscription.getKey("auth");
+    
+                if (!p256dh || !auth) {
+                    console.error("Clés manquantes dans l'abonnement:", subscription);
+                    throw new Error("Les clés de l'abonnement sont manquantes.");
+                }
+    
+                return {
+                    endpoint: subscription.endpoint,
+                    keys: {
+                        p256dh: btoa(String.fromCharCode.apply(null, new Uint8Array(p256dh))),
+                        auth: btoa(String.fromCharCode.apply(null, new Uint8Array(auth))),
+                    },
+                };
+            } catch (err) {
+                console.error("Erreur lors de la sérialisation:", err);
+                throw new Error("Impossible de sérialiser l'abonnement.");
+            }
         };
-    };
 
     const subscribeToPush = async () => {
         if ('serviceWorker' in navigator && 'PushManager' in window) {
