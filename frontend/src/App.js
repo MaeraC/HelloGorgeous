@@ -18,18 +18,21 @@ function App() {
                 const auth = subscription.getKey("auth");
     
                 if (!p256dh || !auth) {
-                    console.error("Clés manquantes dans l'abonnement:", subscription);
-                    throw new Error("Les clés de l'abonnement sont manquantes.");
+                    throw new Error("Les clés `p256dh` ou `auth` sont absentes.");
                 }
-    
+        
+                // Conversion sécurisée des clés en Base64
+                const keys = {
+                    p256dh: btoa(String.fromCharCode(...new Uint8Array(p256dh))),
+                    auth: btoa(String.fromCharCode(...new Uint8Array(auth))),
+                };
+        
                 return {
                     endpoint: subscription.endpoint,
-                    keys: {
-                        p256dh: btoa(String.fromCharCode.apply(null, new Uint8Array(p256dh))),
-                        auth: btoa(String.fromCharCode.apply(null, new Uint8Array(auth))),
-                    },
+                    keys,
                 };
-            } catch (err) {
+            } 
+            catch (err) {
                 console.error("Erreur lors de la sérialisation:", err);
                 throw new Error("Impossible de sérialiser l'abonnement.");
             }
@@ -63,7 +66,13 @@ function App() {
                 });
     
                 console.log("Nouvel abonnement créé:", subscription);
-    
+
+                const p256dh = subscription.getKey("p256dh");
+                const auth = subscription.getKey("auth");
+
+                console.log("Clé p256dh:", p256dh ? new Uint8Array(p256dh) : "Non définie");
+                console.log("Clé auth:", auth ? new Uint8Array(auth) : "Non définie");
+
                 // Sérialisation de l'abonnement
                 const serializedSubscription = serializeSubscription(subscription);
     
@@ -80,7 +89,8 @@ function App() {
     
                 setSuccess("Notifications activées avec succès !");
                 setError("");
-            } catch (err) {
+            } 
+            catch (err) {
                 console.error(err);
                 setError(err.message);
             }
