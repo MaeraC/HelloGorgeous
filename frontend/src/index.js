@@ -4,7 +4,6 @@ import './index.css';
 import App from './App.js';
 
 // fichier frontend/src/index.js
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -17,6 +16,6 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker
       .register('/service-worker.js')
       .then(() => console.log('Service Worker enregistré !'))
-      .catch((error) => console.error('Erreur d\'enregistrement du Service Worker :', error));
-  });
+      .catch((error) => console.error('Erreur d\'enregistrement du Service Worker :', error))
+  })
 }
