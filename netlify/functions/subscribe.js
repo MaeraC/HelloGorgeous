@@ -5,13 +5,18 @@ let subscriptions = []
 
 exports.handler = async (event, context) => {
     try {
+        console.log("subscribe.js : Corps brut reçu :", event.body);
+
         if (!event.body) {
             return {
                 statusCode: 400,
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                },
                 body: JSON.stringify({
                     error: "subscribe.js : Corps de la requête vide.",
                 }),
-            }
+            };
         }
 
         let body
@@ -24,6 +29,9 @@ exports.handler = async (event, context) => {
 
             return {
                 statusCode: 400,
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                },
                 body: JSON.stringify({
                     error: "subscribe.js : JSON invalide reçu.",
                     details: error.message,
@@ -36,6 +44,9 @@ exports.handler = async (event, context) => {
         if ( !body.endpoint || !body.keys || !body.keys.p256dh || !body.keys.auth ) {
             return {
                 statusCode: 400,
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                },
                 body: JSON.stringify({
                     error: "subscribe.js : Les clés `endpoint`, `p256dh` ou `auth` sont manquantes.",
                 }),
@@ -57,6 +68,9 @@ exports.handler = async (event, context) => {
 
             return {
                 statusCode: 201,
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                },
                 body: JSON.stringify({
                     message: "subscribe.js : Abonnement enregistré avec succès !",
                 }),
@@ -65,6 +79,9 @@ exports.handler = async (event, context) => {
         else {
             return {
                 statusCode: 200,
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                },
                 body: JSON.stringify({
                     message: "subscribe.js : Abonnement déjà existant.",
                 }),
@@ -76,6 +93,9 @@ exports.handler = async (event, context) => {
 
         return {
             statusCode: 500,
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+            },
             body: JSON.stringify({
                 error: "subscribe.js : Erreur lors du traitement de l'abonnement.",
                 details: error.message,
